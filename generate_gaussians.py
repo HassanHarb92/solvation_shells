@@ -19,9 +19,9 @@ functionals = {
 functionals_with_dispersion = ["B2PLYPD3", "B97D3", "B3LYP", "BLYP", "PBE1PBE",
                                "TPSSTPSS", "PBEPBE", "BP86", "BPBE", "B3PW91",
                                "BMK", "CAM–B3LYP", "LC-wPBE", "M05", "M052X",
-                               "M06L", "M06", "M062X", "M06HF", "PW6B95D3" ,'UHF']
+                               "M06L", "M06", "M062X", "M06HF", "PW6B95D3"]
 
-directories = ["fe_6H2O", "fe_18H2O"]
+directories = ["Fe_6H2O", "Fe_18H2O", "Fe_39H2O", "Fe_66H2O"]
 
 for directory in directories:
     for filename in os.listdir(directory):
