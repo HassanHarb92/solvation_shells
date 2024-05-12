@@ -27,9 +27,10 @@ def run_xtb(xyz_file, charge, uhf):
     base_filename = f"{xyz_file[:-4]}_{charge}_{uhf}"
     output_filename = f"{base_filename}_opt.out"
 
+    method = "--gfn2"
+
     print(f"Running optimization for charge={charge} and UHF={uhf}...")
-#    xtb_command = f'xtb {xyz_file} --opt extreme --gfn2  --chrg {charge} --uhf {uhf} --solvent h2o  > {output_filename}'
-    xtb_command = f'xtb {xyz_file} --opt extreme --gfn2  --chrg {charge} --uhf {uhf} --alpb water  > {output_filename}'
+    xtb_command = f'xtb {xyz_file} --opt extreme {method}  --chrg {charge} --uhf {uhf} --alpb water  > {output_filename}'
     subprocess.run(xtb_command, shell=True)
 
     # Move optimized geometry file
@@ -42,7 +43,7 @@ def run_xtb(xyz_file, charge, uhf):
     output_filename = f"{base_filename}_hess.out"
     print("Calculating Hessian and extracting values...")
 #    xtb_command = f'xtb {base_filename}.xyz --gfn2 --chrg {charge} --uhf {uhf} --hess  --solvent h2o > {output_filename}'
-    xtb_command = f'xtb {base_filename}.xyz --gfn2 --chrg {charge} --uhf {uhf} --hess  --alpb water  > {output_filename}'
+    xtb_command = f'xtb {base_filename}.xyz {method} --chrg {charge} --uhf {uhf} --hess  --alpb water  > {output_filename}'
     subprocess.run(xtb_command, shell=True)
 
     # Extract values from the output file
