@@ -30,7 +30,7 @@ def run_xtb(xyz_file, charge, uhf):
     method = "--gfn2"
 
     print(f"Running optimization for charge={charge} and UHF={uhf}...")
-    xtb_command = f'xtb {xyz_file} --opt extreme {method}  --chrg {charge} --uhf {uhf} --alpb water  > {output_filename}'
+    xtb_command = f'xtb {xyz_file} --opt extreme {method} --chrg {charge} --uhf {uhf} --alpb water  > {output_filename}'
     subprocess.run(xtb_command, shell=True)
 
     # Move optimized geometry file
