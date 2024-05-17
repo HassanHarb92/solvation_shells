@@ -46,30 +46,76 @@ def calculate_convex_hull(vertices):
     hull = ConvexHull(vertices)
     return hull
 
-def place_oxygen_atoms_on_hull(hull, center, radius, n):
+def enlarge_hull_vertices(hull, center, additional_distance):
     """
-    Place oxygen atoms on the convex hull of the molecule.
+    Enlarge the convex hull by increasing the distance of each vertex from the center.
 
     Args:
     hull (ConvexHull): The convex hull of the molecule.
     center (tuple): The center (x, y, z) of the molecule.
-    radius (float): The radius of the sphere.
-    n (int): Number of atoms to place.
+    additional_distance (float): The distance by which to enlarge the hull.
 
     Returns:
-    list: A list of tuples representing the (x, y, z) coordinates of each atom.
+    np.ndarray: The enlarged vertices of the convex hull.
     """
-    vertices = hull.points[hull.vertices]
-    atoms = []
-
-    for i in range(n):
-        v = vertices[i % len(vertices)]
-        direction = v - np.array(center)
+    enlarged_vertices = []
+    for vertex in hull.points[hull.vertices]:
+        direction = vertex - np.array(center)
         direction /= np.linalg.norm(direction)
-        x, y, z = center + radius * direction
-        atoms.append((x, y, z))
+        enlarged_vertex = np.array(center) + (np.linalg.norm(vertex - np.array(center)) + additional_distance) * direction
+        enlarged_vertices.append(enlarged_vertex)
+    return np.array(enlarged_vertices)
 
-    return atoms
+def fibonacci_sphere(samples, radius):
+    """
+    Generate points on the surface of a sphere using the Fibonacci lattice method.
+
+    Args:
+    samples (int): Number of points to generate.
+    radius (float): Radius of the sphere.
+
+    Returns:
+    list: A list of tuples representing the (x, y, z) coordinates of each point.
+    """
+    points = []
+    phi = math.pi * (3.0 - math.sqrt(5.0))  # golden angle in radians
+
+    for i in range(samples):
+        y = 1 - (i / float(samples - 1)) * 2  # y goes from 1 to -1
+        radius_at_y = math.sqrt(1 - y * y)  # radius at y
+
+        theta = phi * i  # golden angle increment
+
+        x = math.cos(theta) * radius_at_y
+        z = math.sin(theta) * radius_at_y
+
+        points.append((x * radius, y * radius, z * radius))
+
+    return points
+
+def map_to_hull(points, hull, center, additional_distance):
+    """
+    Map points generated on a sphere to the enlarged convex hull.
+
+    Args:
+    points (list): Points on the surface of a sphere.
+    hull (ConvexHull): The convex hull of the molecule.
+    center (tuple): The center (x, y, z) of the molecule.
+    additional_distance (float): The distance by which to enlarge the hull.
+
+    Returns:
+    list: A list of tuples representing the (x, y, z) coordinates of each point on the hull.
+    """
+    hull_vertices = hull.points[hull.vertices]
+    mapped_points = []
+
+    for point in points:
+        direction = point - np.array(center)
+        direction /= np.linalg.norm(direction)
+        mapped_point = np.array(center) + (np.linalg.norm(hull_vertices[0] - np.array(center)) + additional_distance) * direction
+        mapped_points.append(mapped_point)
+
+    return mapped_points
 
 def place_hydrogen_atoms(oxygen_atom, oh_distance, angle):
     """
@@ -85,14 +131,14 @@ def place_hydrogen_atoms(oxygen_atom, oh_distance, angle):
     """
     angle_rad = math.radians(angle)
 
-    # Initial arbitrary vector for first hydrogen
-    v1 = np.array([1, 0, 0])
+    # Initial arbitrary vector for first hydrogen (as a float array)
+    v1 = np.array([1.0, 0.0, 0.0])
 
-    # Calculate second vector using cross product to ensure the specified angle
+    # Calculate second vector using the angle
     v2 = np.array([
         math.cos(angle_rad),
         math.sin(angle_rad),
-        0
+        0.0
     ])
 
     # Normalize vectors
@@ -130,7 +176,9 @@ def create_modified_xyz(original_xyz_path, new_xyz_path, radius, nO):
     atom_coords = np.array(atom_coords)
     hull = calculate_convex_hull(atom_coords)
 
-    oxygen_atoms = place_oxygen_atoms_on_hull(hull, center, radius, nO)
+    enlarged_vertices = enlarge_hull_vertices(hull, center, 2.0)
+    sphere_points = fibonacci_sphere(nO, radius)
+    oxygen_atoms = map_to_hull(sphere_points, hull, center, 2.0)
 
     with open(new_xyz_path, 'w') as new_file:
         new_file.write(str(int(original_lines[0]) + len(oxygen_atoms) * 3) + '\n')
