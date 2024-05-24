@@ -5,5 +5,5 @@
 4. In case of non-spherical systems, i.e. mixed anions, we create a convex hull instead of a sphere: Hydration_convex_hull.py 
 
 
-## Next
+## In progress
 1. Test on different systems: Ti, V, Cr, Mn, and Co
