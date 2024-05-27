@@ -9,3 +9,4 @@
 Test on different systems: Ti, V, Cr, Mn, and Co
 a. octahedral complexes – DFT optimization
 b. add two shells of waters – single points
+c. compare bond lengths to DFT as well
