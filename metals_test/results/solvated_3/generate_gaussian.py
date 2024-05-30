@@ -3,11 +3,11 @@ import os
 # Define functionals and metals information
 functionals = {
     "B3LYP": "B3LYP empiricaldispersion=gd3",
-    "BLYP": "BLYP empiricaldispersion=gd3",
-    "HSE06": "HSEH1PBE",
-    "M08-HX": "M08HX",
-    "svwn": "svwn",
-    "PBE0": "PBE1PBE empiricaldispersion=gd3"
+#    "BLYP": "BLYP empiricaldispersion=gd3",
+#    "HSE06": "HSEH1PBE",
+#    "M08-HX": "M08HX",
+#    "svwn": "svwn",
+#    "PBE0": "PBE1PBE empiricaldispersion=gd3"
 }
 
 metals_info = {
@@ -20,7 +20,7 @@ metals_info = {
 # Directory containing the .xyz files
 xyz_directory = "."
 # Directory to save the .com files
-com_directory = "../com_files_solvated"
+com_directory = "." #"../com_files_solvated"
 os.makedirs(com_directory, exist_ok=True)
 
 # Function to read .xyz file content
