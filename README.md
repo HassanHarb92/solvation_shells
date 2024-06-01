@@ -4,9 +4,5 @@
 3. generate_gaussian.py generates a list of single-point calculations using ~30 DFT functionals, accounts for dispersion when possible 
 4. In case of non-spherical systems, i.e. mixed anions, we create a convex hull instead of a sphere: Hydration_convex_hull.py 
 
-
-## In progress
-Test on different systems: Ti, V, Cr, Mn, and Co
-a. octahedral complexes – DFT optimization
-b. add two shells of waters – single points
-c. compare bond lengths to DFT as well
+#in progress:
+1. Fix Convex hull, need to have it working for the TMQM dataset
