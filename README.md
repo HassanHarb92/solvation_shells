@@ -6,3 +6,4 @@
 
 #in progress:
 1. Fix Convex hull, need to have it working for the TMQM dataset
+2. Generate examples from TMQM – test out
