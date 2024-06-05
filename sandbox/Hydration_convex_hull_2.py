@@ -1,18 +1,18 @@
 import sys
 import numpy as np
 from scipy.spatial import ConvexHull
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 def read_xyz(file):
     with open(file, 'r') as f:
         lines = f.readlines()
         num_atoms = int(lines[0])
+        atom_types = []
         coordinates = []
         for line in lines[2:2 + num_atoms]:
             parts = line.split()
+            atom_types.append(parts[0])
             coordinates.append([float(parts[1]), float(parts[2]), float(parts[3])])
-    return np.array(coordinates)
+    return atom_types, np.array(coordinates)
 
 def place_hydrogens(O, direction):
     angle = 109.5 * np.pi / 180  # Convert angle to radians
@@ -36,7 +36,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     filename = sys.argv[1]
-    points = read_xyz(filename)
+    atom_types, points = read_xyz(filename)
 
     # Calculate the convex hull
     hull = ConvexHull(points)
@@ -66,39 +66,20 @@ if __name__ == "__main__":
 
     # Output the results to a new .xyz file
     with open("expanded_structure.xyz", 'w') as f:
-        num_atoms = len(O_atoms) + len(H_atoms)
+        num_atoms = len(points) + len(O_atoms) + len(H_atoms)
         f.write(f"{num_atoms}\n\n")
+        
+        # Write original atoms
+        for atom_type, point in zip(atom_types, points):
+            f.write(f"{atom_type} {point[0]} {point[1]} {point[2]}\n")
+        
+        # Write expanded O atoms
         for O in O_atoms:
             f.write(f"O {O[0]} {O[1]} {O[2]}\n")
+        
+        # Write H atoms
         for H in H_atoms:
             f.write(f"H {H[0]} {H[1]} {H[2]}\n")
 
-    # Visualization
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-
-    # Plot the original points
-    ax.scatter(points[:, 0], points[:, 1], points[:, 2], color='b')
-
-    # Plot the original convex hull
-    for simplex in hull.simplices:
-        ax.plot(points[simplex, 0], points[simplex, 1], points[simplex, 2], 'k-')
-
-    # Plot the expanded convex hull
-    ax.scatter(expanded_vertices[:, 0], expanded_vertices[:, 1], expanded_vertices[:, 2], color='r')
-
-    for simplex in hull.simplices:
-        ax.plot(expanded_vertices[simplex, 0], expanded_vertices[simplex, 1], expanded_vertices[simplex, 2], 'r--')
-
-    # Plot O atoms
-    ax.scatter(O_atoms[:, 0], O_atoms[:, 1], O_atoms[:, 2], color='orange', label='O')
-
-    # Plot H atoms
-    H_atoms = np.array(H_atoms)
-    ax.scatter(H_atoms[:, 0], H_atoms[:, 1], H_atoms[:, 2], color='green', label='H')
-
-    ax.add_collection3d(Poly3DCollection(expanded_vertices[hull.simplices], facecolors='cyan', linewidths=1, edgecolors='r', alpha=.25))
-
-    plt.legend()
-    plt.show()
+    print("Expanded structure written to expanded_structure.xyz")
 
