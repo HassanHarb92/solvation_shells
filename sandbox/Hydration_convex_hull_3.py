@@ -1,6 +1,7 @@
 import sys
 import numpy as np
-from scipy.spatial import ConvexHull, Delaunay
+from scipy.spatial import ConvexHull
+from scipy.spatial.distance import cdist
 
 def read_xyz(file):
     with open(file, 'r') as f:
@@ -30,40 +31,38 @@ def place_hydrogens(O, direction):
 
     return H1, H2
 
-def generate_points_on_convex_hull(points, distance=5.0):
-    # Calculate the convex hull
-    hull = ConvexHull(points)
-    hull_points = points[hull.vertices]
-
-    # Calculate the centroid of the hull
-    centroid = np.mean(hull_points, axis=0)
-
-    # Create a new set of expanded vertices
+def generate_points_on_expanded_hull(hull, centroid, expansion_distance, point_spacing):
     expanded_vertices = []
-    for vertex in hull_points:
+    for vertex in hull.points[hull.vertices]:
         direction = vertex - centroid
         norm_direction = direction / np.linalg.norm(direction)
-        expanded_vertex = vertex + 2 * norm_direction
+        expanded_vertex = vertex + expansion_distance * norm_direction
         expanded_vertices.append(expanded_vertex)
 
     expanded_vertices = np.array(expanded_vertices)
-    
+
     # Sample points on the surface of the expanded convex hull
-    delaunay = Delaunay(expanded_vertices)
-    simplex_points = expanded_vertices[delaunay.simplices]
-    
-    surface_points = []
-    for simplex in simplex_points:
-        for i in range(3):
-            start = simplex[i]
-            end = simplex[(i + 1) % 3]
-            vec = end - start
-            norm_vec = vec / np.linalg.norm(vec)
-            num_segments = int(np.linalg.norm(vec) // distance)
-            for j in range(num_segments):
-                surface_points.append(start + j * distance * norm_vec)
-                
-    return np.array(surface_points)
+    hull_expanded = ConvexHull(expanded_vertices)
+    sampled_points = []
+    for simplex in hull_expanded.simplices:
+        simplex_points = expanded_vertices[simplex]
+        for i, p1 in enumerate(simplex_points):
+            for j in range(i+1, len(simplex_points)):
+                p2 = simplex_points[j]
+                vec = p2 - p1
+                dist = np.linalg.norm(vec)
+                num_samples = int(dist // point_spacing)
+                for k in range(1, num_samples):
+                    sampled_points.append(p1 + (k * point_spacing / dist) * vec)
+
+    sampled_points = np.array(sampled_points)
+    # Remove points that are too close to each other
+    if len(sampled_points) > 0:
+        dist_matrix = cdist(sampled_points, sampled_points)
+        np.fill_diagonal(dist_matrix, np.inf)
+        mask = np.all(dist_matrix >= point_spacing, axis=0)
+        sampled_points = sampled_points[mask]
+    return sampled_points
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -73,13 +72,21 @@ if __name__ == "__main__":
     filename = sys.argv[1]
     atom_types, points = read_xyz(filename)
 
+    # Calculate the convex hull
+    hull = ConvexHull(points)
+
+    # Calculate the centroid of the hull
+    centroid = np.mean(points[hull.vertices], axis=0)
+
     # Generate points on the surface of the expanded convex hull
-    O_atoms = generate_points_on_convex_hull(points)
+    expansion_distance = 2.0
+    point_spacing = 3.0
+    O_atoms = generate_points_on_expanded_hull(hull, centroid, expansion_distance, point_spacing)
 
     # Place hydrogen atoms
     H_atoms = []
     for O in O_atoms:
-        direction = O - np.mean(O_atoms, axis=0)
+        direction = O - centroid
         H1, H2 = place_hydrogens(O, direction)
         H_atoms.append(H1)
         H_atoms.append(H2)
