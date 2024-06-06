@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 from scipy.spatial import ConvexHull
-from scipy.spatial.distance import cdist
+import open3d as o3d
 
 def read_xyz(file):
     with open(file, 'r') as f:
@@ -31,38 +31,42 @@ def place_hydrogens(O, direction):
 
     return H1, H2
 
-def generate_points_on_expanded_hull(hull, centroid, expansion_distance, point_spacing):
-    expanded_vertices = []
-    for vertex in hull.points[hull.vertices]:
-        direction = vertex - centroid
-        norm_direction = direction / np.linalg.norm(direction)
-        expanded_vertex = vertex + expansion_distance * norm_direction
-        expanded_vertices.append(expanded_vertex)
+def compute_convex_hull(points):
+    hull = ConvexHull(points)
+    vertices = points[hull.vertices]
+    faces = hull.simplices
+    return vertices, faces, hull.vertices
 
-    expanded_vertices = np.array(expanded_vertices)
+def laplacian_smoothing(vertices, faces, iterations=50, lambda_factor=0.5):
+    # Create an adjacency list
+    adjacency_list = {i: set() for i in range(len(vertices))}
+    for face in faces:
+        for i, j in zip(face, np.roll(face, -1)):
+            adjacency_list[i].add(j)
+            adjacency_list[j].add(i)
+    
+    for _ in range(iterations):
+        new_vertices = np.copy(vertices)
+        for i in range(len(vertices)):
+            neighbors = np.array([vertices[j] for j in adjacency_list[i]])
+            new_vertices[i] = vertices[i] + lambda_factor * (np.mean(neighbors, axis=0) - vertices[i])
+        vertices = new_vertices
+    return vertices
 
-    # Sample points on the surface of the expanded convex hull
-    hull_expanded = ConvexHull(expanded_vertices)
-    sampled_points = []
-    for simplex in hull_expanded.simplices:
-        simplex_points = expanded_vertices[simplex]
-        for i, p1 in enumerate(simplex_points):
-            for j in range(i+1, len(simplex_points)):
-                p2 = simplex_points[j]
-                vec = p2 - p1
-                dist = np.linalg.norm(vec)
-                num_samples = int(dist // point_spacing)
-                for k in range(1, num_samples):
-                    sampled_points.append(p1 + (k * point_spacing / dist) * vec)
+def create_mesh(vertices, faces):
+    mesh = o3d.geometry.TriangleMesh()
+    mesh.vertices = o3d.utility.Vector3dVector(vertices)
+    mesh.triangles = o3d.utility.Vector3iVector(faces)
+    mesh.compute_vertex_normals()
+    return mesh
 
-    sampled_points = np.array(sampled_points)
-    # Remove points that are too close to each other
-    if len(sampled_points) > 0:
-        dist_matrix = cdist(sampled_points, sampled_points)
-        np.fill_diagonal(dist_matrix, np.inf)
-        mask = np.all(dist_matrix >= point_spacing, axis=0)
-        sampled_points = sampled_points[mask]
-    return sampled_points
+def sample_points_on_mesh(mesh, distance):
+    surface_area = mesh.get_surface_area()
+    num_points = int(surface_area / (np.pi * (distance / 2) ** 2))
+    if num_points <= 0:
+        raise ValueError("The number of points for Poisson disk sampling is too small. Increase the mesh surface area or decrease the distance between points.")
+    pcd = mesh.sample_points_poisson_disk(number_of_points=num_points)
+    return np.asarray(pcd.points)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -73,27 +77,54 @@ if __name__ == "__main__":
     atom_types, points = read_xyz(filename)
 
     # Calculate the convex hull
-    hull = ConvexHull(points)
+    vertices, faces, vertex_indices = compute_convex_hull(points)
 
-    # Calculate the centroid of the hull
-    centroid = np.mean(points[hull.vertices], axis=0)
+    # Map faces to vertex indices
+    mapped_faces = np.array([[np.where(vertex_indices == idx)[0][0] for idx in face] for face in faces])
 
-    # Generate points on the surface of the expanded convex hull
-    expansion_distance = 2.0
-    point_spacing = 3.0
-    O_atoms = generate_points_on_expanded_hull(hull, centroid, expansion_distance, point_spacing)
+    # Expand convex hull vertices by 2 units
+    centroid = np.mean(vertices, axis=0)
+    expanded_vertices = []
+    for vertex in vertices:
+        direction = vertex - centroid
+        norm_direction = direction / np.linalg.norm(direction)
+        expanded_vertex = vertex + 2 * norm_direction
+        expanded_vertices.append(expanded_vertex)
+
+    expanded_vertices = np.array(expanded_vertices)
+
+    # Apply Laplacian smoothing with increased iterations
+    smoothed_vertices = laplacian_smoothing(expanded_vertices, mapped_faces, iterations=100, lambda_factor=0.4)
+
+    # Create Open3D mesh
+    mesh = create_mesh(smoothed_vertices, mapped_faces)
+
+    # Sample points on the smoothed mesh surface ensuring they are 4 units apart
+    try:
+        additional_O_atoms = sample_points_on_mesh(mesh, 4.0)
+    except ValueError as e:
+        print(e)
+        sys.exit(1)
+
+    # Filter points to ensure they are at least 4 units away from original vertices
+    filtered_O_atoms = []
+    for point in additional_O_atoms:
+        if np.all(np.linalg.norm(points - point, axis=1) >= 4.0):
+            filtered_O_atoms.append(point)
+    
+    filtered_O_atoms = np.array(filtered_O_atoms)
 
     # Place hydrogen atoms
     H_atoms = []
-    for O in O_atoms:
+    for O in filtered_O_atoms:
         direction = O - centroid
         H1, H2 = place_hydrogens(O, direction)
         H_atoms.append(H1)
         H_atoms.append(H2)
 
     # Output the results to a new .xyz file
-    with open("expanded_structure.xyz", 'w') as f:
-        num_atoms = len(points) + len(O_atoms) + len(H_atoms)
+    with open("expanded_structure_with_smooth_hull.xyz", 'w') as f:
+        num_atoms = len(points) + len(filtered_O_atoms) + len(H_atoms)
         f.write(f"{num_atoms}\n\n")
         
         # Write original atoms
@@ -101,12 +132,12 @@ if __name__ == "__main__":
             f.write(f"{atom_type} {point[0]} {point[1]} {point[2]}\n")
         
         # Write expanded O atoms
-        for O in O_atoms:
+        for O in filtered_O_atoms:
             f.write(f"O {O[0]} {O[1]} {O[2]}\n")
         
         # Write H atoms
         for H in H_atoms:
             f.write(f"H {H[0]} {H[1]} {H[2]}\n")
 
-    print("Expanded structure written to expanded_structure.xyz")
+    print("Expanded structure with smooth hull written to expanded_structure_with_smooth_hull.xyz")
 
