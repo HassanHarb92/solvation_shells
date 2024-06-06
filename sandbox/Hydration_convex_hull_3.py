@@ -60,13 +60,17 @@ def create_mesh(vertices, faces):
     mesh.compute_vertex_normals()
     return mesh
 
-def sample_points_on_mesh(mesh, distance):
-    surface_area = mesh.get_surface_area()
-    num_points = int(surface_area / (np.pi * (distance / 2) ** 2))
-    if num_points <= 0:
-        raise ValueError("The number of points for Poisson disk sampling is too small. Increase the mesh surface area or decrease the distance between points.")
-    pcd = mesh.sample_points_poisson_disk(number_of_points=num_points)
+def sample_points_on_mesh(mesh, num_points):
+    pcd = mesh.sample_points_uniformly(number_of_points=num_points)
     return np.asarray(pcd.points)
+
+def generate_and_filter_points(mesh, points, num_points_to_sample, min_distance):
+    sampled_points = sample_points_on_mesh(mesh, num_points_to_sample)
+    filtered_points = []
+    for point in sampled_points:
+        if np.all(np.linalg.norm(points - point, axis=1) >= min_distance):
+            filtered_points.append(point)
+    return np.array(filtered_points)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -99,20 +103,15 @@ if __name__ == "__main__":
     # Create Open3D mesh
     mesh = create_mesh(smoothed_vertices, mapped_faces)
 
-    # Sample points on the smoothed mesh surface ensuring they are 4 units apart
-    try:
-        additional_O_atoms = sample_points_on_mesh(mesh, 4.0)
-    except ValueError as e:
-        print(e)
-        sys.exit(1)
+    # Generate and filter points on the mesh surface
+    num_points_to_sample = 10000  # Start with a large number of points
+    min_distance = 4.0
+    filtered_O_atoms = generate_and_filter_points(mesh, points, num_points_to_sample, min_distance)
 
-    # Filter points to ensure they are at least 4 units away from original vertices
-    filtered_O_atoms = []
-    for point in additional_O_atoms:
-        if np.all(np.linalg.norm(points - point, axis=1) >= 4.0):
-            filtered_O_atoms.append(point)
-    
-    filtered_O_atoms = np.array(filtered_O_atoms)
+    while len(filtered_O_atoms) == 0:
+        print(f"No suitable points found with {num_points_to_sample} samples. Increasing sample size.")
+        num_points_to_sample *= 2
+        filtered_O_atoms = generate_and_filter_points(mesh, points, num_points_to_sample, min_distance)
 
     # Place hydrogen atoms
     H_atoms = []
