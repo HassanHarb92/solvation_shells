@@ -3,7 +3,4 @@
 2. xtb_thermo.py performs optimization and frequency calculations on .xyz structure using --gfn2 
 3. generate_gaussian.py generates a list of single-point calculations using ~30 DFT functionals, accounts for dispersion when possible 
 4. In case of non-spherical systems, i.e. mixed anions, we create a convex hull instead of a sphere: Hydration_convex_hull.py 
-
-#in progress:
-1. Fix Convex hull, need to have it working for the TMQM dataset
-2. Generate examples from TMQM – test out
+5. A simpler one is Hydration_and_xtb.py which calculates the center of the molecule, determines a sphere and places waters accordingly. 
