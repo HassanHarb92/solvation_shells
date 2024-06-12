@@ -6,6 +6,5 @@
 5. A simpler one is Hydration_and_xtb.py which calculates the center of the molecule, determines a sphere and places waters accordingly.
 
 ## Testing on Fe systems
-1. Fe Boron complexes (enumerated with in-house code)
-2. Fe + 2 ions 
+1. Fe + 2 ions: the mechanism might require desolvation of Fe metals. i.e. we need to consider Fe(H2O)n --> Fe + nH2O
  
