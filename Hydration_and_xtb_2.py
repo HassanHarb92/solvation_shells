@@ -147,7 +147,7 @@ def create_modified_xyz(original_xyz_path, new_xyz_path, radius, nO):
             if line.strip():  # Check if the line is not blank
                new_file.write(line)
         # Append the new oxygen and hydrogen atoms
-        new_file.write("\n")
+#        new_file.write("\n")
         for oxygen in oxygen_atoms:
             new_file.write(f"O {oxygen[0]} {oxygen[1]} {oxygen[2]}\n")
             for hydrogen in place_hydrogen_atoms(oxygen, 0.9, 109):
