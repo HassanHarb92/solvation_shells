@@ -180,8 +180,9 @@ def run_xtb_and_move(new_xyz_path, original_xyz_path):
     None
     """
     # Run xtb optimization
-    subprocess.run(['xtb', new_xyz_path, '--opt', '--gfn2', '--chrg', '1', '--uhf', '1', '--alpb', 'water'], check=True)
-
+#    subprocess.run(['xtb', new_xyz_path, '--opt', '--gfn2', '--chrg', '1', '--uhf', '1', '--alpb', 'water'], check=True)
+#    subprocess.run(['xtb', new_xyz_path, '--opt', '--gfn2', '--chrg', '-2',  '--alpb', 'water'], check=True)
+    subprocess.run(['xtb', new_xyz_path, '--opt', '--gfn2', '--uhf', '1', '--alpb', 'water'], check=True)
     # Define new file names and paths
     optimized_file = 'xtbopt.xyz'
     new_optimized_file = new_xyz_path.replace('_solvated.xyz', '_solvated_opt.xyz')
