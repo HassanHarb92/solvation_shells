@@ -61,7 +61,7 @@ def place_oxygen_atoms(center, radius, n):
 
     return atoms
 
-def place_hydrogen_atoms(oxygen_atom, center, oh_distance, angle):
+def place_hydrogen_atoms(oxygen_atom, center, oh_distance, angle=109.5):
     """
     Calculate the coordinates of two hydrogen atoms for each oxygen atom.
 
@@ -69,7 +69,7 @@ def place_hydrogen_atoms(oxygen_atom, center, oh_distance, angle):
     oxygen_atom (tuple): The (x, y, z) coordinates of the oxygen atom.
     center (tuple): The (x, y, z) coordinates of the center of the molecule.
     oh_distance (float): The O-H distance.
-    angle (float): The H-O-H angle in degrees.
+    angle (float): The H-O-H angle in degrees (default is 109.5).
 
     Returns:
     list: A list of tuples representing the (x, y, z) coordinates of each hydrogen atom.
@@ -88,18 +88,12 @@ def place_hydrogen_atoms(oxygen_atom, center, oh_distance, angle):
         perp_vector = np.array([-direction[1], direction[0], 0])
         perp_vector /= np.linalg.norm(perp_vector)
 
-    # Rotate the perpendicular vector by the given angle to get the two hydrogen positions
-    rot_matrix = np.array([
-        [math.cos(angle_rad / 2), -math.sin(angle_rad / 2), 0],
-        [math.sin(angle_rad / 2), math.cos(angle_rad / 2), 0],
-        [0, 0, 1]
-    ])
+    # Generate the second perpendicular vector using cross product
+    perp_vector2 = np.cross(direction, perp_vector)
 
-    h1_vector = np.dot(rot_matrix, perp_vector) * oh_distance
-    h2_vector = np.dot(rot_matrix, -perp_vector) * oh_distance
-
-    h1 = np.array(oxygen_atom) + h1_vector
-    h2 = np.array(oxygen_atom) + h2_vector
+    # Calculate the positions of the two hydrogen atoms
+    h1 = np.array(oxygen_atom) + oh_distance * (math.sin(angle_rad / 2) * perp_vector + math.cos(angle_rad / 2) * direction)
+    h2 = np.array(oxygen_atom) + oh_distance * (-math.sin(angle_rad / 2) * perp_vector + math.cos(angle_rad / 2) * direction)
 
     return [tuple(h1), tuple(h2)]
 
@@ -128,7 +122,7 @@ def create_modified_xyz(original_xyz_path, new_xyz_path, radius, nO):
         # Append the new oxygen and hydrogen atoms
         for oxygen in oxygen_atoms:
             new_file.write(f"O {oxygen[0]} {oxygen[1]} {oxygen[2]}\n")
-            for hydrogen in place_hydrogen_atoms(oxygen, center, 0.9, 109):
+            for hydrogen in place_hydrogen_atoms(oxygen, center, 0.9, 109.5):
                 new_file.write(f"H {hydrogen[0]} {hydrogen[1]} {hydrogen[2]}\n")
 
 def generate_new_file_path(original_path, radius):
