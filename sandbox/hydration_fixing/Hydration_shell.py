@@ -103,8 +103,7 @@ def place_hydrogen_atoms(oxygen_atom, center, oh_distance, angle):
 
     return [tuple(h1), tuple(h2)]
 
-
-def create_modified_xyz(original_xyz_path, new_xyz_path, radius,nO):
+def create_modified_xyz(original_xyz_path, new_xyz_path, radius, nO):
     """
     Create a new XYZ file with additional oxygen and hydrogen atoms.
 
@@ -114,7 +113,7 @@ def create_modified_xyz(original_xyz_path, new_xyz_path, radius,nO):
     radius (float): The radius of the sphere where atoms will be placed.
     """
     center = calculate_molecule_center(original_xyz_path)
-    oxygen_atoms = place_oxygen_atoms(center, radius,nO)
+    oxygen_atoms = place_oxygen_atoms(center, radius, nO)
 
     with open(original_xyz_path, 'r') as original_file:
         original_lines = original_file.readlines()
@@ -129,9 +128,8 @@ def create_modified_xyz(original_xyz_path, new_xyz_path, radius,nO):
         # Append the new oxygen and hydrogen atoms
         for oxygen in oxygen_atoms:
             new_file.write(f"O {oxygen[0]} {oxygen[1]} {oxygen[2]}\n")
-            for hydrogen in place_hydrogen_atoms(oxygen, 0.9, 109):
+            for hydrogen in place_hydrogen_atoms(oxygen, center, 0.9, 109):
                 new_file.write(f"H {hydrogen[0]} {hydrogen[1]} {hydrogen[2]}\n")
-# ... (previous functions remain the same)
 
 def generate_new_file_path(original_path, radius):
     """
@@ -158,11 +156,8 @@ if __name__ == "__main__":
     original_xyz_path = sys.argv[1]
     radius = float(sys.argv[2]) if len(sys.argv) == 3 else 5
     new_xyz_path = generate_new_file_path(original_xyz_path, str(int(radius)))
-#    nO = 20
-    nO = int(int(radius)*3)
-    print ("Number of waters added = ", nO)
-    create_modified_xyz(original_xyz_path, new_xyz_path, radius,nO)
+    nO = int(int(radius) * 3)
+    print("Number of waters added =", nO)
+    create_modified_xyz(original_xyz_path, new_xyz_path, radius, nO)
     print(f"New XYZ file created at {new_xyz_path} with additional oxygen and hydrogen atoms.")
-
-
 
