@@ -8,6 +8,9 @@
 ## Testing on Fe systems
 1. Fe + 2 ions: the mechanism might require desolvation of Fe metals. i.e. we need to consider Fe(H2O)n --> Fe + nH2O
 2. Expand the approach: Take metal+ligand+waters then add 2 solvation shells, get xTB geometry, then DFT single points 
+3. FeCN6 is still challenging, b3lyp/mbs then single point on larger basis is working.
 
 ## Metals that dont work
 1. check the chemistry of the reaction, model possible side reactions
+2. Cu is giving good results
+
