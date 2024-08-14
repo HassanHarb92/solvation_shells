@@ -35,9 +35,9 @@ def add_water_to_nitrogen(n_position):
     ])
     
     # Add the atoms to the molecule
-    molecule.append(Atoms('H', positions=[hydrogen_pos]))
-    molecule.append(Atoms('O', positions=[oxygen_pos]))
-    molecule.append(Atoms('H', positions=[second_hydrogen_pos]))
+    molecule.append('H', hydrogen_pos)
+    molecule.append('O', oxygen_pos)
+    molecule.append('H', second_hydrogen_pos)
 
 # Add waters around all nitrogens
 for n_pos in nitrogen_positions:
