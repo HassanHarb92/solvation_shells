@@ -9,6 +9,8 @@
 1. Fe + 2 ions: the mechanism might require desolvation of Fe metals. i.e. we need to consider Fe(H2O)n --> Fe + nH2O
 2. Expand the approach: Take metal+ligand+waters then add 2 solvation shells, get xTB geometry, then DFT single points 
 3. FeCN6 is still challenging, b3lyp/mbs then single point on larger basis is working. Still need to address the issue with H-bonding.. Try other functionals to see if they perform better, also check: https://schlegelgroup.wayne.edu/Pub_folder/258.pdf
+4. Trends with hydrogen bonds – can we expand that to TMQM dataset?
+5. Are there any other challenging cases?
 
 ## Metals that dont work
 1. check the chemistry of the reaction, model possible side reactions
