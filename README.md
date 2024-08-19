@@ -11,6 +11,7 @@
 3. FeCN6 is still challenging, b3lyp/mbs then single point on larger basis is working. Still need to address the issue with H-bonding.. Try other functionals to see if they perform better, also check: https://schlegelgroup.wayne.edu/Pub_folder/258.pdf
 4. Trends with hydrogen bonds – can we expand that to TMQM dataset?
 5. Are there any other challenging cases?
+6. We also need 3-5 cases that work (check Rahbani's paper)
 
 ## Metals that dont work
 1. check the chemistry of the reaction, model possible side reactions
