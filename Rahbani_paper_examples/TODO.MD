@@ -5,7 +5,7 @@
 - [x] Crest calculations on Fe(III) and ligand
   - [x] Alternatively, we know where the bonds will happen, just build them? depends on how quick crest is
 - [x] Generate ML3 structures
-- [ ] Perform xTB to get approximate structure
-- [ ] DFT minimal basis set to get a better structure
-  - [ ] Low spin only?
+- [x] Perform xTB to get approximate structure - skipped
+- [x] DFT minimal basis set to get a better structure
+  - [x] Low spin only? no doing low and high spin
 - [ ] Add solvation shells, calculate single points, redox potentials
