@@ -1,5 +1,5 @@
 %chk=catecholate_ox_low_spin.chk
-#p B3LYP empiricaldispersion=gd3 scrf=(cpcm,solvent=water) scf=(maxcycles=500,xqc,maxconventional=50)
+#p B3LYP empiricaldispersion=gd3 scrf=(cpcm,solvent=water) scf=(maxcycles=500,xqc,maxconventional=50) 6-31+G(2df,p)  
 
 catecholate ox low_spin spin
 

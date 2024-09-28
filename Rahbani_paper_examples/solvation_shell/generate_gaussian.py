@@ -12,7 +12,7 @@ def write_gaussian_input(molecule_name, charge, multiplicity, coordinates, state
     with open(filename, 'w') as f:
         # Write header and route section
         f.write(f"%chk={molecule_name}_{state}_{spin}.chk\n")
-        f.write("#p B3LYP empiricaldispersion=gd3 scrf=(cpcm,solvent=water) scf=(maxcycles=500,xqc,maxconventional=50)\n\n")
+        f.write("#p B3LYP empiricaldispersion=gd3 scrf=(cpcm,solvent=water) scf=(maxcycles=500,xqc,maxconventional=50) 6-31+G(2df,p)  \n\n")
         f.write(f"{molecule_name} {state} {spin} spin\n\n")
         
         # Write charge and multiplicity

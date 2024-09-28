@@ -8,4 +8,5 @@
 - [x] Perform xTB to get approximate structure - skipped
 - [x] DFT minimal basis set to get a better structure
   - [x] Low spin only? no doing low and high spin
-- [ ] Add solvation shells, calculate single points, redox potentials
+- [x] Add solvation shells, calculate single points, 
+- [ ] redox potentials
