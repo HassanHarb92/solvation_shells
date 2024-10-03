@@ -1,3 +1,4 @@
+
 import os
 import shutil
 import subprocess
@@ -10,23 +11,18 @@ solvation_dir = os.path.join(xyz_dir, "added_solvation")
 if not os.path.exists(solvation_dir):
     os.mkdir(solvation_dir)
 
-# List of xyz files that contain "low_spin" in their name
-xyz_files = [f for f in os.listdir(xyz_dir) if f.endswith(".xyz") and "low_spin" in f]
+# List of xyz files
+xyz_files = [f for f in os.listdir(xyz_dir) if f.endswith(".xyz")]
 
-# Run the hydration shell script for each low_spin xyz file and move the output
+# Run the hydration shell script for each xyz file and move the output
 for xyz_file in xyz_files:
     script_path = "~/Desktop/Codes/solvation_shells/Hydration_shell_radius.py"
     subprocess.run(["python", os.path.expanduser(script_path), xyz_file])
-
+    
     # Assuming the new file has the same name as the original file with some modifications
     generated_xyz = xyz_file.replace(".xyz", "_with_solvation.xyz")  # Modify as per the script's output
     if os.path.exists(generated_xyz):
-        # Move the generated low_spin file to the solvation directory
         shutil.move(generated_xyz, os.path.join(solvation_dir, generated_xyz))
-
-        # Create a high_spin version of the file by copying and renaming it
-        high_spin_xyz = generated_xyz.replace("low_spin", "high_spin")
-        shutil.copy(os.path.join(solvation_dir, generated_xyz), os.path.join(solvation_dir, high_spin_xyz))
     else:
         print(f"Generated file {generated_xyz} not found")
 
