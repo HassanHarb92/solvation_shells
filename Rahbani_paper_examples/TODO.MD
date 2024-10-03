@@ -9,4 +9,5 @@
 - [x] DFT minimal basis set to get a better structure
   - [x] Low spin only? no doing low and high spin
 - [x] Add solvation shells, calculate single points, 
-- [ ] redox potentials
+- [x] redox potentials
+- [ ] fix redox potentials – issue with number of waters
