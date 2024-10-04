@@ -11,22 +11,29 @@ if not os.path.exists(solvation_dir):
     os.mkdir(solvation_dir)
 
 # List of xyz files that contain "low_spin" in their name
-xyz_files = [f for f in os.listdir(xyz_dir) if f.endswith(".xyz") and "low_spin" in f]
+xyz_files = [f for f in os.listdir(xyz_dir) if f.endswith(".xyz") and "_red_" in f]
 
 # Run the hydration shell script for each low_spin xyz file and move the output
 for xyz_file in xyz_files:
+    print("Processing file:", xyz_file)
     script_path = "~/Desktop/Codes/solvation_shells/Hydration_shell_radius.py"
-    subprocess.run(["python", os.path.expanduser(script_path), xyz_file])
+    
+    try:
+        # Run the hydration shell script
+        subprocess.run(["python", os.path.expanduser(script_path), xyz_file])
 
-    # Assuming the new file has the same name as the original file with some modifications
-    generated_xyz = xyz_file.replace(".xyz", "_with_solvation.xyz")  # Modify as per the script's output
-    if os.path.exists(generated_xyz):
-        # Move the generated low_spin file to the solvation directory
-        shutil.move(generated_xyz, os.path.join(solvation_dir, generated_xyz))
+        # Assuming the new file has the same name as the original file with some modifications
+        generated_xyz = xyz_file.replace(".xyz", "_with_solvation.xyz")  # Modify as per the script's output
+        if os.path.exists(generated_xyz):
+            # Move the generated low_spin file to the solvation directory
+            shutil.move(generated_xyz, os.path.join(solvation_dir, generated_xyz))
 
-        # Create a high_spin version of the file by copying and renaming it
-        high_spin_xyz = generated_xyz.replace("low_spin", "high_spin")
-        shutil.copy(os.path.join(solvation_dir, generated_xyz), os.path.join(solvation_dir, high_spin_xyz))
-    else:
-        print(f"Generated file {generated_xyz} not found")
+            # Create a high_spin version of the file by copying and renaming it
+            ox_xyz = generated_xyz.replace("_red_", "_ox_")
+            shutil.copy(os.path.join(solvation_dir, generated_xyz), os.path.join(solvation_dir, ox_xyz))
+            print(f"Generated ox file: {ox_xyz}")
+        else:
+            print(f"Generated file {generated_xyz} not found")
+    except subprocess.CalledProcessError as e:
+        print(f"Error occurred while processing {xyz_file}: {e}")
 
