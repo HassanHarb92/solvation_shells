@@ -1,5 +1,9 @@
-106
-Molecule with added oxygen and hydrogen atoms
+%chk=catecholate_red_low_spin.chk
+#p B3LYP empiricaldispersion=gd3 scrf=(cpcm,solvent=water) scf=(maxcycles=500,xqc,maxconventional=50) 6-31+G(2df,p)  
+
+catecholate red low_spin spin
+
+-4 1
 C          5.09951       -0.53683       -0.59731
 C          5.12390        0.19498        0.59740
 C          3.90834        0.62865        1.24110
@@ -106,3 +110,5 @@ H 3.581763108543971 0.32963659509414844 -6.885434364016334
 O -1.8962410808504473 -1.318922225391623 -7.573981800417965
 H -0.9962410808504473 -1.318922225391623 -7.573981800417965
 H -2.189252419861888 -0.4679555073522379 -7.573981800417965
+
+

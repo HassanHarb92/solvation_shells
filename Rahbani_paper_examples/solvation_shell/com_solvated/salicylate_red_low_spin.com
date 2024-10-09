@@ -1,5 +1,9 @@
-118
-Molecule with added oxygen and hydrogen atoms
+%chk=salicylate_red_low_spin.chk
+#p B3LYP empiricaldispersion=gd3 scrf=(cpcm,solvent=water) scf=(maxcycles=500,xqc,maxconventional=50) 6-31+G(2df,p)  
+
+salicylate red low_spin spin
+
+-4 1
 C         -1.66463        5.17383       -0.75039
 C         -0.67993        4.87518       -1.71752
 C         -0.00167        3.64484       -1.70736
@@ -118,3 +122,5 @@ H 0.5561649298252336 4.813957196902437 -7.8213738452658905
 O 1.1443097155295128 -1.9994262508042426 -8.496682905194927
 H 2.0443097155295127 -1.9994262508042426 -8.496682905194927
 H 0.8512983765180717 -1.1484595327648575 -8.496682905194927
+
+

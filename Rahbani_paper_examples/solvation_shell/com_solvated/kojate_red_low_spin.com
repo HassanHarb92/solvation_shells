@@ -1,5 +1,9 @@
-127
-Molecule with added oxygen and hydrogen atoms
+%chk=kojate_red_low_spin.chk
+#p B3LYP empiricaldispersion=gd3 scrf=(cpcm,solvent=water) scf=(maxcycles=500,xqc,maxconventional=50) 6-31+G(2df,p)  
+
+kojate red low_spin spin
+
+-1 1
 C         -1.38377        3.56891        1.03846
 C         -1.14660        4.80980        0.48222
 O         -0.36569        5.03377       -0.67411
@@ -127,3 +131,5 @@ H -4.236030642545034 2.109287823281104 -7.884001768181156
 O 2.2106172593974933 1.0221099121265298 -8.553130665529586
 H 3.1106172593974932 1.0221099121265298 -8.553130665529586
 H 1.9176059203860523 1.873076630165915 -8.553130665529586
+
+

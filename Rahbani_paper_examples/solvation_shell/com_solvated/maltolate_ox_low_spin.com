@@ -1,5 +1,9 @@
-112
-Molecule with added oxygen and hydrogen atoms
+%chk=maltolate_ox_low_spin.chk
+#p B3LYP empiricaldispersion=gd3 scrf=(cpcm,solvent=water) scf=(maxcycles=500,xqc,maxconventional=50) 6-31+G(2df,p)  
+
+maltolate ox low_spin spin
+
+0 2
 C          2.20441        3.61796        2.17380
 C          2.56991        2.85178        0.90978
 C          1.79433        1.85081        0.32835
@@ -112,3 +116,5 @@ H 3.556508075780113 0.33300101342643884 -6.573030715913524
 O -1.8830828889074203 -1.3102488480893029 -7.256995020063014
 H -0.9830828889074202 -1.3102488480893029 -7.256995020063014
 H -2.176094227918861 -0.4592821300499177 -7.256995020063014
+
+

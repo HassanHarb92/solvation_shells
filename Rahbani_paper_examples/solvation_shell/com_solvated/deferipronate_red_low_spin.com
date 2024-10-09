@@ -1,5 +1,9 @@
-136
-Molecule with added oxygen and hydrogen atoms
+%chk=deferipronate_red_low_spin.chk
+#p B3LYP empiricaldispersion=gd3 scrf=(cpcm,solvent=water) scf=(maxcycles=500,xqc,maxconventional=50) 6-31+G(2df,p)  
+
+deferipronate red low_spin spin
+
+-1 1
 C         -1.14429        3.59962       -1.73080
 C         -0.59743        2.51442       -0.80841
 C          0.00216        2.63195        0.52348
@@ -136,3 +140,5 @@ H 3.5670293929069805 2.6359947897056637 -8.47040812077987
 O -0.9659802036253947 -2.3058028151059897 -9.144908355057643
 H -0.0659802036253947 -2.3058028151059897 -9.144908355057643
 H -1.2589915426368357 -1.4548360970666045 -9.144908355057643
+
+

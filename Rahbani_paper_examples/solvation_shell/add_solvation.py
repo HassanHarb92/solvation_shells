@@ -22,13 +22,13 @@ for xyz_file in xyz_files:
         # Run the hydration shell script
         subprocess.run(["python", os.path.expanduser(script_path), xyz_file])
 
-        # Assuming the new file has the same name as the original file with some modifications
-        generated_xyz = xyz_file.replace(".xyz", "_with_solvation.xyz")  # Modify as per the script's output
+        # Modify the expected output file to match the correct suffix
+        generated_xyz = xyz_file.replace(".xyz", "_solvated.xyz")  # Now matching _solvated suffix
         if os.path.exists(generated_xyz):
             # Move the generated low_spin file to the solvation directory
             shutil.move(generated_xyz, os.path.join(solvation_dir, generated_xyz))
 
-            # Create a high_spin version of the file by copying and renaming it
+            # Create an ox version of the file by copying and renaming it
             ox_xyz = generated_xyz.replace("_red_", "_ox_")
             shutil.copy(os.path.join(solvation_dir, generated_xyz), os.path.join(solvation_dir, ox_xyz))
             print(f"Generated ox file: {ox_xyz}")
