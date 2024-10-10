@@ -11,3 +11,4 @@
 - [x] Add solvation shells, calculate single points, 
 - [x] redox potentials
 - [ ] fix redox potentials – issue with number of waters
+- [ ] Run with constrained xtb, freeze the molecule and optimize waters, get redox potentials 
