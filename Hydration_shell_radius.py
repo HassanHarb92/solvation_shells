@@ -173,7 +173,7 @@ if __name__ == "__main__":
     original_xyz_path = sys.argv[1]
     center = calculate_molecule_center(original_xyz_path)
     max_distance = calculate_max_distance(center, original_xyz_path)
-    radius = max_distance + 1.7 
+    radius = max_distance + 1.5 
     new_xyz_path = generate_new_file_path(original_xyz_path)
     nO = int(radius * 3)
     print("Number of waters added =", nO)
