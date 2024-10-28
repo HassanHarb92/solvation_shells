@@ -1,9 +1,9 @@
-%chk=test.chk
-# test
+%chk=deferipronate_ox_lowspin.chk
+#p uB3LYP empiricaldispersion=gd3 opt=(cartesian,loose,maxcycles=2000,calcfc) scf=(maxcycles=500,xqc,maxconventional=50) cep-31  
 
-title
+deferipronate ox low-spin state
 
--1 2
+0 2
  C                 -0.20161246    0.53702860   -0.43795880
  C                  0.98813900    1.15015429   -0.50842824
  C                  2.23412336    0.38914316   -0.20779070
@@ -62,4 +62,11 @@ title
  H                  2.36441824    7.13167917   -1.24389885
  H                  1.18788793    7.80903007   -2.34865340
  H                  1.79238216    4.85361788   -0.20733871
+
+
+
+--link1--
+%chk=deferipronate_ox_lowspin.chk
+#p ub3lyp geom=allcheck guess=read chkbasis empiricaldispersion=gd3 scf=(maxcycles=500,xqc,maxconventional=50) scrf=(cpcm,solvent=water)
+
 

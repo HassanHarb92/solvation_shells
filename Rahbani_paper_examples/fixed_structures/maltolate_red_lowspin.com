@@ -1,9 +1,9 @@
-%chk=test.chk
-# test
+%chk=maltolate_red_lowspin.chk
+#p uB3LYP empiricaldispersion=gd3 opt=(cartesian,loose,maxcycles=2000,calcfc) scf=(maxcycles=500,xqc,maxconventional=50) cep-31  
 
-title
+maltolate red low-spin state
 
-0 1
+-1 1
  C                  1.90291913   -0.62481259   -0.72100786
  C                  0.46823365   -0.84591405   -0.20441685
  C                 -0.32965864    0.22226706    0.00147855
@@ -50,4 +50,11 @@ title
  H                  0.93162166    1.69138546   -0.20412136
  H                  0.10856745    2.68522078    2.30909333
  H                  0.47913090    4.30097069    0.15157995
+
+
+
+--link1--
+%chk=maltolate_red_lowspin.chk
+#p ub3lyp geom=allcheck guess=read chkbasis empiricaldispersion=gd3 scf=(maxcycles=500,xqc,maxconventional=50) scrf=(cpcm,solvent=water)
+
 

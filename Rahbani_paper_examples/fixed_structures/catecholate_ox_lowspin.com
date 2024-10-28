@@ -1,9 +1,9 @@
-%chk=test.chk
-# test
+%chk=catecholate_ox_lowspin.chk
+#p uB3LYP empiricaldispersion=gd3 opt=(cartesian,loose,maxcycles=2000,calcfc) scf=(maxcycles=500,xqc,maxconventional=50) cep-31  
 
-test
+catecholate ox low-spin state
 
-1 2
+-3 2
  C                 -2.26489678   -0.82113525    0.05667380
  C                 -2.82311649    0.37431286    0.45427894
  C                 -2.00012236    1.46210331    0.85332623
@@ -47,4 +47,11 @@ test
  H                  2.89999523    4.03041407    0.62658141
  H                  2.57974472    0.03297913    2.26259551
  H                  4.13102674    0.59779322   -0.07689805
+
+
+
+--link1--
+%chk=catecholate_ox_lowspin.chk
+#p ub3lyp geom=allcheck guess=read chkbasis empiricaldispersion=gd3 scf=(maxcycles=500,xqc,maxconventional=50) scrf=(cpcm,solvent=water)
+
 
