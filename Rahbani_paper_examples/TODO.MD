@@ -12,3 +12,4 @@
 - [x] redox potentials
 - [ ] fix redox potentials – issue with number of waters
 - [ ] Run with constrained xtb, freeze the molecule and optimize waters, get redox potentials 
+- [ ] Take each structure separately, redo the calculations.
