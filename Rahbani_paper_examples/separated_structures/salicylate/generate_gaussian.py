@@ -3,8 +3,8 @@ import glob
 
 # Define the Gaussian job parameters for oxidized and reduced forms
 gaussian_files = [
-    {"charge": 0, "multiplicity": 2, "title": "Oxidized_Structure"},
-    {"charge": -1, "multiplicity": 1, "title": "Reduced_Structure"}
+    {"charge": -3, "multiplicity": 2, "title": "Oxidized_Structure"},
+    {"charge": -4, "multiplicity": 1, "title": "Reduced_Structure"}
 ]
 
 def create_gaussian_input(xyz_filename, charge, multiplicity, title):
