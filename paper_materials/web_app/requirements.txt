@@ -1,0 +1,14 @@
+# add the required pypi packages here that your app actually needs
+numpy
+pandas
+pyarrow
+matplotlib
+plotly
+pillow
+streamlit
+rdkit-pypi
+# due to changes of py3Dmol, we need to install a specific version:
+py3Dmol==2.0.0.post2
+# required for stmol:
+ipython_genutils
+stmol
