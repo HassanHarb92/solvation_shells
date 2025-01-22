@@ -20,7 +20,7 @@ st.title('Systematic Improvement of Redox Potential Calculation of Fe(III)/Fe(II
 st.markdown('## Supplementary Information Visualizer')
 
 # Directory containing the .xyz files
-xyz_files_directory = 'xyz_files/'
+xyz_files_directory = 'paper_materials/web_app/xyz_files/'
 
 # List all .xyz files in the directory
 xyz_files = list_xyz_files(xyz_files_directory)
